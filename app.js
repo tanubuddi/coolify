@@ -8,7 +8,7 @@ app.get('/', (req, res) => {
     res.send('Hello, World! This is my Node.js app running on the specified port!');
 });
 
-// Listen on all network interfaces (0.0.0.0) to accept external requests
+// Listen on all network interfaces
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
