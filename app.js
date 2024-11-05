@@ -1,14 +1,27 @@
 const express = require('express');
-const app = express();
+const { Pool } = require('pg');
 
-// Use the environment-provided PORT or default to 3000
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-    res.send('Hello, World! This is my Node.js app running on the specified port!');
+// Use Pool to connect to PostgreSQL using DATABASE_URL
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false,  // Ensures secure connection (common for managed databases)
+    },
 });
 
-// Listen on all network interfaces
+app.get('/', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT NOW()');
+        res.send(`Hello, World! Database time: ${result.rows[0].now}`);
+    } catch (error) {
+        console.error("Database connection error:", error);
+        res.status(500).send("Database connection error");
+    }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
